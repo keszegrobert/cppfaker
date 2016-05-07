@@ -18,7 +18,12 @@ def main(argv):
             parser = ClangOutputParser();
             parsedline = parser.parse(line)
             faker = CppFaker(filename)
-            faker.fakeLine(parsedline)
+            generated = faker.process_line(parsedline)
+            if generated != '':
+                print generated
+
+        print '#include "{}"'.format(filename)
+        
 
 if __name__ == '__main__':
     main(sys.argv)

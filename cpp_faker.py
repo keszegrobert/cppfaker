@@ -1,21 +1,31 @@
 class CppFaker:
     def __init__(self,filename):
-        pass
+        self.fakes = []
 
-    def fake_class(self,classname):
+    def generate_class(self,classname):
         return 'class {}{{\n}};\n'.format(classname)
 
-    def fake_namespace(self,name):
+    def generate_namespace(self,name):
         return 'namespace {}{{\n}};\n'.format(name)
 
-    def fake_line(self, filename, linenum, position, msgtype, err, obj):
+    def process_line(self, line):
+        filename, linenum, position, msgtype, err, obj = line
         if msgtype != 'error':
-            return ''
-        if err == 'unknown type name':
-            generated = self.fake_class(obj)
-            return generated
+            pass
+        elif err == 'unknown type name':
+            fake = {"type":"class","name":obj}
+            self.fakes.append(fake)
         elif err == 'use of undeclared identifier':
-            generated = self.fake_namespace(obj)
-            return generated
-        else:
-            return ''
+            fake = {"type":"class","name":obj}
+            self.fakes.append(fake)
+            
+
+    def generate_code(self):
+        generated = ''
+        for fake in self.fakes:
+            if fake['type'] == 'class':
+                generated += self.generate_class(fake['name'])
+            elif fake['type'] == 'namespace':
+                generated += self.generate_namespace(fake['name'])
+        return generated
+
