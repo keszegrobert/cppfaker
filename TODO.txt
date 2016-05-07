@@ -1,0 +1,172 @@
+TODO:
+
+1. beolvasni a cpp fájlt, és a benne lévő függvényeket kilistázni
+2. minden egyes függvényre a következőket végrehajtani:
+    2.1. minden egyes, a függvényben használt külső függőséget fake-elni kell. Ha valami nem egyértelmű, azt jelezni kell. A fake-elés történhet aztán egy bemenő fájl segítségével is, ahol a felhasználó lefixálhatja az egyes nem definiált dolgokat.
+    2.2. generálni kell egy fake osztály-definíciót, ahol az egyetlen valódi a Bar függvény lesz.
+    2.3. logolni kell a bejövő paramétereket, a hívásból származó értékeket, és a hívások következményeit(ezt makrók beszúrásával oldjuk meg az eredeti kódba)
+    2.4. Elvégzünk pár manuális tesztet, hogy az eredeti kód meghívódjon, és logolja az egyes hívásokat(json formátumba menti, és ha ugyanaz, akkor a hash-ből tudni fogja, hogy nem kell elmenteni)
+    2.5. a json-ból teszteket generálunk(vagy csak simán használjuk őket a tesztelés során)
+3. a kiértékelés során megnézzük, hogy vannak-e inicializálatlan értékek használva a json-okban (esetleg lehetne automatikusan jelezni, hogy valami inicializálatlan)
+4. ha hibát találunk valamilyen szélső érték esetében, akkor Exception-os tesztet írunk
+5. a refaktor során állandóan futtatjuk a teszteket, így kerülhetjük el a változtatás okozta melléfogásokat
+
+Példa:
+
+1. a beolvasott cpp file
+--------------------------
+ShortStr Foo::Bar(A a,B& b, C* c)
+{
+    ma = a.GetValue();
+    b.Call(ma);
+    c->SetValue(0);
+    return c->GetType() + ' ' + ShortStr(ma);
+}
+
+2.1. fake osztályok:
+--------------------------
+
+class ShortStr : public fake{
+    public:
+        ShortStr(int a);
+};
+
+class A : public fake{
+    public:
+        int GetValue();
+};
+
+class B : public fake{
+    public:
+        void Call(int);
+};
+
+class C : public fake{
+    public:
+        void SetValue(int a);
+        ShortStr GetType();
+};
+
+class FooFake : fake {
+    public:
+        Foo();
+        int ma;
+};
+
+2.2. fake Foo:
+--------------------------
+class Foo : FooFake{
+public:
+    ShortStr Foo::Bar(A a,B& b, C* c);
+};
+
+2.3. hatások és függőségek logolása
+--------------------------------------
+ShortStr Foo::Bar(A a,B& b, C* c)
+{
+    LOGSTART()
+    LOGINPUTPTR(this)
+    LOGINPUT(a)
+    LOGINPUTREF(b)
+    LOGINPUTPTR(c)
+    LOGCALL(ma = LOGCALL(a.GetValue()));
+    LOGCALL(b.Call(ma));
+    LOGCALL(c->SetValue(LOGCALLPARAM(0)))
+    retval = LOGCALL(LOGCALL((LOGCALL(c->GetType()) + ' ') + ShortStr(ma)));
+    LOGRETVAL(retval); 
+    LOGRETURN()
+    return retval;
+}
+
+2.4. json fájlok a LOG... segítségével
+---------------------------------------
+1.json
+{
+    fakes: [
+        {
+            "expression" : "a.GetValue()",
+            "return" : 1,
+        },
+        {
+            "expression" : "b.Call(ma)",
+        },
+        {
+            "expression" : "c->SetValue(0)",
+        },
+        {
+            "expression" : "c->GetType()",
+            "return" : "INTTYPE",
+        },
+        {
+            "expression" : "c->GetType() + ' '",
+            "return" : "INTTYPE ",
+        },
+        {
+            "expression" : "ShortStr(ma)",
+            "return" : "INTTYPE ",
+        },
+        {
+            "expression" : "ShortStr(ma)",
+            "return" : "1",
+        },        
+        {
+            "expression" : "c->GetType() +' '+ShortStr(ma)",
+            "return" : "INTTYPE 1",
+        },
+    ]
+}
+
+2.json
+
+{
+    fakes: [
+        {
+            "expression" : "a.GetValue()",
+            "return" : 2,
+        },
+        {
+            "expression" : "b.Call(ma)",
+        },
+        {
+            "expression" : "c->SetValue(0)",
+        },
+        {
+            "expression" : "c->GetType()",
+            "return" : "STRINGTYPE",
+        },
+        {
+            "expression" : "c->GetType() + ' '",
+            "return" : "STRINGTYPE ",
+        },
+        {
+            "expression" : "ShortStr(ma)",
+            "return" : "STRINGTYPE ",
+        },
+        {
+            "expression" : "ShortStr(ma)",
+            "return" : "2",
+        },        
+        {
+            "expression" : "c->GetType() +' '+ShortStr(ma)",
+            "return" : "STRINGTYPE 2",
+        },
+    ]
+}
+
+2.5.json-ból tesztek:
+
+TEST(Foo,BarReturnsIntType1)
+{
+    mock a;
+    a.call('GetValue').shouldReturn(1)
+    ...
+}
+
+TEST(Foo,BarReturnsStringType2)
+{
+    mock a;
+    a.call('GetValue').shouldReturn(2)
+    ..
+}
+
+
