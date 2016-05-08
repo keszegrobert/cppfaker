@@ -31,6 +31,7 @@ class TestCppGenerator(TestCase):
             ]
         }]
         expected = 'class ShortStr{\n'\
+            'public:\n'\
             '\tvoid Foo();\n'\
             '\tvoid Bar();\n'\
             '};\n'

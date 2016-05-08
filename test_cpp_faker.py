@@ -46,6 +46,7 @@ class TestCppFaker(TestCase):
             ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
         ],
             'class Foo{\n'
+            'public:\n'
             '\tvoid Bar();\n'
             '};\n',
         )
@@ -59,6 +60,7 @@ class TestCppFaker(TestCase):
             ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
         ],
             'class Foo{\n'
+            'public:\n'
             '\tvoid Bar();\n'
             '};\n',
         )
@@ -80,6 +82,7 @@ class TestCppFaker(TestCase):
                 ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
             ],
             'class Foo{\n'
+            'public:\n'
             '\tvoid Bar();\n'
             '};\n',
         )

@@ -17,6 +17,7 @@ class CppGenerator:
         lines = []
         lines.append('class {}{{'.format(fake['name']))
         if 'members' in fake:
+            lines.append('public:')
             for member in fake['members']:
                 lines.append(self.generate_member(member))
         lines.append('}};\n'.format())
