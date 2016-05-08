@@ -63,6 +63,26 @@ class TestCppFaker(TestCase):
             '};\n',
         )
 
+    def test_cpp_faker_should_not_register_duplicate_findings(self):
+        self.check_if_generated_code_is_as_expected(
+            [
+                ('', '', '', 'error', ['unknown type name', 'ShortStr']),
+                ('', '', '', 'error', ['unknown type name', 'ShortStr'])
+            ],
+            'class ShortStr{\n};\n'
+        )
+
+    def test_cpp_faker_should_not_register_duplicate_members(self):
+        self.check_if_generated_code_is_as_expected(
+            [
+                ('', '', '', 'error', ['unknown type name', 'Foo']),
+                ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo']),
+                ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
+            ],
+            'class Foo{\n'
+            '\tvoid Bar();\n'
+            '};\n',
+        )
 
 if __name__ == '__main__':
     unittest.main()
