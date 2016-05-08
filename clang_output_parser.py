@@ -3,7 +3,7 @@ class ClangOutputParser:
     def parse(self, str):
         arr = str.split(':')
         if len(arr) != 5:
-            return ('', '', '', '', '')
+            return ('', '', '', '', [''])
         filename = arr[0]
         line = arr[1]
         position = arr[2]
@@ -11,5 +11,5 @@ class ClangOutputParser:
         err = arr[4]
         errarr = [e.strip() for e in err.split("'")]
         if len(errarr) != 3:
-            return ('', '', '', '', '')
+            return ('', '', '', '', [''])
         return filename, line, position, msgtype, errarr

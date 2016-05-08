@@ -2,6 +2,7 @@ import sys
 import subprocess
 from clang_output_parser import ClangOutputParser
 from cpp_faker import CppFaker
+from cpp_generator import CppGenerator
 
 
 def main(argv):
@@ -19,7 +20,10 @@ def main(argv):
             parser = ClangOutputParser()
             parsedline = parser.parse(line)
             faker.process_line(parsedline)
-        print(faker.generate_code())
+        fakes = faker.get_fakes()
+        print fakes
+        generator = CppGenerator()
+        print(generator.generate(fakes))
         print('#include "{}"'.format(filename))
 
 if __name__ == '__main__':

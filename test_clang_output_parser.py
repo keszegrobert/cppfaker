@@ -23,7 +23,7 @@ class TestClangOutParser(TestCase):
         self.assertEquals('', line)
         self.assertEquals('', position)
         self.assertEquals('', msgtype)
-        self.assertEquals('', err)
+        self.assertEquals([''], err)
 
 if __name__ == '__main__':
     unittest.main()
