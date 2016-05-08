@@ -15,6 +15,16 @@ class TestClangOutParser(TestCase):
         self.assertEquals('error', msgtype)
         self.assertEquals(['unknown type name', 'ShortStr', ''], err)
 
+    def test_clang_output_parser_should_analyze_no_member(self):
+        errmsg = "./foobar.cpp:3:12: error: no member named 'GetValue' in 'A'"
+        parser = ClangOutputParser()
+        filename, line, position, msgtype, err = parser.parse(errmsg)
+        self.assertEquals('./foobar.cpp', filename)
+        self.assertEquals('3', line)
+        self.assertEquals('12', position)
+        self.assertEquals('error', msgtype)
+        self.assertEquals(['no member named', 'GetValue', 'in', 'A', ''], err)
+
     def test_clang_output_parser_should_not_analyze_empty_string(self):
         errmsg = ""
         parser = ClangOutputParser()

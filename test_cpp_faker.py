@@ -6,7 +6,7 @@ from cpp_generator import CppGenerator
 
 class TestCppFaker(TestCase):
     def setUp(self):
-        self.faker = CppFaker('test.cpp')
+        self.faker = CppFaker([])
         self.generator = CppGenerator()
 
     def check_if_generated_code_is_as_expected(self, lines, expected):
@@ -49,6 +49,20 @@ class TestCppFaker(TestCase):
             '\tvoid Bar();\n'
             '};\n',
         )
+
+    def test_cpp_faker_initialization(self):
+        initial = ('', '', '', 'error', ['unknown type name', 'Foo'])
+        self.faker.process_line(initial)
+        fakes = self.faker.get_fakes()
+        self.faker = CppFaker(fakes)
+        self.check_if_generated_code_is_as_expected([
+            ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
+        ],
+            'class Foo{\n'
+            '\tvoid Bar();\n'
+            '};\n',
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

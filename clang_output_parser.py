@@ -10,6 +10,4 @@ class ClangOutputParser:
         msgtype = arr[3].strip()
         err = arr[4]
         errarr = [e.strip() for e in err.split("'")]
-        if len(errarr) != 3:
-            return ('', '', '', '', [''])
         return filename, line, position, msgtype, errarr

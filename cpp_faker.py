@@ -1,6 +1,6 @@
 class CppFaker:
-    def __init__(self, filename):
-        self.fakes = []
+    def __init__(self, initial):
+        self.fakes = initial
 
     def get_fakes(self):
         return self.fakes
@@ -12,6 +12,7 @@ class CppFaker:
                     fake['members'] = []
                 fake['members'].append(member)
                 return
+        print '{} not found'.format(parent)
 
     def process_line(self, line):
         filename, linenum, position, msgtype, errmsg = line
