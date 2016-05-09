@@ -21,6 +21,11 @@ class TestCppGenerator(TestCase):
         expected = 'class ShortStr{\n};\n'
         self.check_if_generated_code_for_fake_is(fakes, expected)
 
+    def test_cpp_generator_should_generate_variable_declaration(self):
+        fakes = [{'type': 'int', 'name': 'ma'}]
+        expected = 'int ma;\n'
+        self.check_if_generated_code_for_fake_is(fakes, expected)
+
     def test_cpp_generator_should_generate_members_if_provided(self):
         fakes = [{
             'type': 'class',

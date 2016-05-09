@@ -26,7 +26,7 @@ def main(argv):
     create_wrapper_cpp(filename, initial_data)
     faker = CppFaker(initial_data)
 
-    for i in range(1, 3):
+    for i in range(1, 5):
         with open("gcc_out.txt", "wb") as out:
             subprocess.call(['gcc', '-o', 'foo', 'faked.cpp'], stderr=out)
             out.close()

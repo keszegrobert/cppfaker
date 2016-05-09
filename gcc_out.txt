@@ -1,0 +1,32 @@
+In file included from faked.cpp:24:
+./foobar.cpp:1:15: error: out-of-line definition of 'Bar' does not match any declaration in 'Foo'
+ShortStr Foo::Bar(A a,B& b, C* c)
+              ^~~
+./foobar.cpp:3:8: error: assigning to 'int' from incompatible type 'void'
+    ma = a.GetValue();
+       ^ ~~~~~~~~~~~~
+./foobar.cpp:4:12: error: too many arguments to function call, expected 0, have 1
+    b.Call(ma);
+    ~~~~~~ ^~
+faked.cpp:14:2: note: 'Call' declared here
+        void Call();
+        ^
+In file included from faked.cpp:24:
+./foobar.cpp:5:17: error: too many arguments to function call, expected 0, have 1
+    c->SetValue(0);
+    ~~~~~~~~~~~ ^
+faked.cpp:19:2: note: 'SetValue' declared here
+        void SetValue();
+        ^
+In file included from faked.cpp:24:
+./foobar.cpp:6:25: error: invalid operands to binary expression ('void' and 'int')
+    return c->GetType() + ' ' + ShortStr(ma);
+           ~~~~~~~~~~~~ ^ ~~~
+./foobar.cpp:6:33: error: no matching conversion for functional-style cast from 'int' to 'ShortStr'
+    return c->GetType() + ' ' + ShortStr(ma);
+                                ^~~~~~~~~~~
+faked.cpp:1:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int' to 'const ShortStr' for 1st argument
+class ShortStr{
+      ^
+faked.cpp:1:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
+6 errors generated.

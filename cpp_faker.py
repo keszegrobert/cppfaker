@@ -17,6 +17,13 @@ class CppFaker:
                 return
         print '{} not found'.format(parent)
 
+    def update_type(self, fakename, newtype):
+        for fake in self.fakes:
+            if fake['name'] == fakename:
+                fake['type'] = newtype
+                return
+        print '{} not found'.format(fakename)
+
     def insert_definition(self, definition):
         for fake in self.fakes:
             if fake['name'] == definition['name']:
@@ -36,3 +43,5 @@ class CppFaker:
         elif errmsg[0] == 'no member named' and errmsg[2] == 'in':
             member = {"type": 'void', "name": errmsg[1]}
             self.insert_member(errmsg[3], member)
+        elif errmsg[0] == '' and errmsg[2] == 'does not refer to a value':
+            self.update_type(errmsg[1], 'int')

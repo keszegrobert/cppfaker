@@ -29,6 +29,9 @@ class CppGenerator:
         else:
             return 'namespace {{\n}};\n'.format()
 
+    def generate_variable_declaration(self, fake):
+        return '{} {};\n'.format(fake['type'], fake['name'])
+
     def generate(self, fakes):
         generated = []
         for fake in fakes:
@@ -39,4 +42,6 @@ class CppGenerator:
                 generated.append(self.generate_class(fake))
             elif tp == 'namespace':
                 generated.append(self.generate_namespace(fake))
+            else:
+                generated.append(self.generate_variable_declaration(fake))
         return '\n'.join(generated)

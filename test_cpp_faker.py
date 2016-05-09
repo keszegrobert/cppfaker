@@ -87,5 +87,17 @@ class TestCppFaker(TestCase):
             '};\n',
         )
 
+    def test_cpp_faker_should_change_type_of_a_variable(self):
+        lines = [
+            (
+                'r.cpp', '6', '4', 'error',
+                ['use of undeclared identifier', 'ma', '']),
+            (
+                'r.cpp', '6', '4', 'error',
+                ['', 'ma', 'does not refer to a value'])
+        ]
+        expected = 'int ma;\n'
+        self.check_if_generated_code_is_as_expected(lines, expected)
+
 if __name__ == '__main__':
     unittest.main()
