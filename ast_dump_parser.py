@@ -11,6 +11,7 @@ class AstDumpParser:
         return self.tree['members']
 
     def parse_line(self, line):
+        line = line.strip()
         if 'CXXRecordDecl' in line:
             if 'referenced class' in line:
                 arr = line.split('class')
@@ -27,7 +28,7 @@ class AstDumpParser:
             return {'type': 'method', 'name': name, 'declaration': decl}
         elif 'FieldDecl' in line:
             arr = line.split(' ')
-            name = arr[6]
+            name = arr[5]
             arr = line.split("'")
             decl = arr[1]
             return {'type': 'field', 'name': name, 'declaration': decl}
@@ -41,11 +42,9 @@ class AstDumpParser:
         obj = self.parse_line(line)
         if obj == {}:
             return
-
-        if level < self.level:
+        if level == self.level:
             self.stack.pop()
-            print level
-        elif level == self.level:
+        elif level < self.level:
             self.stack.pop()
             self.stack.pop()
 
