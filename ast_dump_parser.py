@@ -14,6 +14,7 @@ class AstDumpParser:
         line = line.strip()
         if 'CXXRecordDecl' in line:
             if 'referenced class' in line:
+                self.access = 'private'
                 arr = line.split('class')
                 name = arr[1].strip()
                 if 'definition' in name:
@@ -25,13 +26,23 @@ class AstDumpParser:
             name = arr[6]
             arr = line.split("'")
             decl = arr[1]
-            return {'type': 'method', 'name': name, 'declaration': decl}
+            return {
+                'access': self.access,
+                'type': 'method',
+                'name': name,
+                'declaration': decl
+            }
         elif 'FieldDecl' in line:
             arr = line.split(' ')
             name = arr[5]
             arr = line.split("'")
             decl = arr[1]
-            return {'type': 'field', 'name': name, 'declaration': decl}
+            return {
+                'access': self.access,
+                'type': 'field', 
+                'name': name, 
+                'declaration': decl
+            }
         elif 'AccessSpecDecl' in line:
             if 'public' in line:
                 self.access = 'public'

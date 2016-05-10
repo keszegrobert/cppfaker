@@ -24,7 +24,12 @@ class TestAstDumpParser(TestCase):
         lines = [
             " `-FieldDecl 0x10484abb0 <line:22:5, col:9> col:9 ma 'int'"
         ]
-        expected = [{'type': 'field', 'name': 'ma', 'declaration': 'int'}]
+        expected = [{
+            'access': 'default',
+            'type': 'field',
+            'name': 'ma',
+            'declaration': 'int'
+        }]
         self.check_if_lines_are_parsed_as_expected(lines, expected)
 
     def test_parser_should_parse_cxx_record_decl_class_definition(self):
@@ -47,6 +52,7 @@ class TestAstDumpParser(TestCase):
             "| `-CXXMethodDecl 0x104849ed0 <line:5:5, col:18> col:9 GetValue 'int (void)'"
         ]
         expected = [{
+            'access': 'default',
             'type': 'method',
             'name': 'GetValue',
             'declaration': 'int (void)'
@@ -66,6 +72,7 @@ class TestAstDumpParser(TestCase):
             'type': 'class',
             'name': 'A',
             'members': [{
+                'access':'public',
                 'type': 'method',
                 'name': 'GetValue',
                 'declaration': 'int (void)'
@@ -89,6 +96,7 @@ class TestAstDumpParser(TestCase):
             'type': 'class',
             'name': 'A',
             'members': [{
+                'access': 'public',
                 'type': 'method',
                 'name': 'GetValue',
                 'declaration': 'int (void)'
@@ -97,6 +105,7 @@ class TestAstDumpParser(TestCase):
             'type': 'class',
             'name': 'B',
             'members': [{
+                'access': 'public',
                 'type': 'method',
                 'name': 'Call',
                 'declaration': 'void (int)'
