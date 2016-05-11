@@ -20,19 +20,22 @@ class CppGenerator:
 
     def generate_class(self, fake, indent):
         lines = []
-        lines.append('{}class {}{{'.format(indent, fake['name']))
         if 'members' in fake:
-            l = self.generate_inner(fake['members'], indent + '\t')
-            lines.extend(l)
-        lines.append('}};\n'.format())
+            lines.append('{}class {}{{'.format(indent, fake['name']))
+            lines.extend(self.generate_inner(fake['members'], indent + '\t'))
+            lines.append('}};\n'.format())
+        else:
+            lines.append('{}class {};'.format(indent, fake['name']))
         return lines
 
     def generate_namespace(self, fake, indent):
         lines = []
-        lines.append('{}namespace {}{{'.format(indent, fake['name']))
         if 'members' in fake:
+            lines.append('{}namespace {}{{'.format(indent, fake['name']))
             lines.extend(self.generate_inner(fake['members'], indent + '\t'))
-        lines.append('}};\n'.format())
+            lines.append('}};\n'.format())
+        else:
+            lines.append('{}namespace {};'.format(indent, fake['name']))
         return lines
 
     def generate_inner(self, fakes, indent=''):

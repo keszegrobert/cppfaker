@@ -13,12 +13,12 @@ class TestCppGenerator(TestCase):
 
     def test_cpp_generator_should_generate_namespace_for_unknown_type(self):
         fakes = [{'type': 'namespace', 'name': 'ShortStr'}]
-        expected = 'namespace ShortStr{\n};\n'
+        expected = 'namespace ShortStr;'
         self.check_if_generated_code_for_fake_is(fakes, expected)
 
     def test_cpp_generator_should_generate_class_for_unknown_type(self):
         fakes = [{'type': 'class', 'name': 'ShortStr'}]
-        expected = 'class ShortStr{\n};\n'
+        expected = 'class ShortStr;'
         self.check_if_generated_code_for_fake_is(fakes, expected)
 
     def test_cpp_generator_should_generate_variable_declaration(self):

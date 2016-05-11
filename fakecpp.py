@@ -10,7 +10,7 @@ def create_wrapper_cpp(filename, fakes):
     with open("faked.cpp", "wb") as faked:
         generator = CppGenerator()
         faked.write(generator.generate(fakes))
-        faked.write('#include "{}"'.format(filename))
+        faked.write('\n#include "{}"'.format(filename))
 
 
 def main(argv):
