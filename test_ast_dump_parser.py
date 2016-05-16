@@ -39,6 +39,20 @@ class TestAstDumpParser(TestCase):
         expected = [{'type': 'class', 'name': 'A'}]
         self.check_if_lines_are_parsed_as_expected(lines, expected)
 
+    def test_parser_should_parse_cxx_record_decl_class_definition2(self):
+        lines = [
+            '`-CXXRecordDecl 0x104861ad8 <line:19:1, line:23:1> line:19:7 class Foo definition'
+        ]
+        expected = [{'type': 'class', 'name': 'Foo'}]
+        self.check_if_lines_are_parsed_as_expected(lines, expected)
+
+    def test_parser_should_ignore_cxx_record_decl_implicit_class(self):
+        lines = [
+            '  |-CXXRecordDecl 0x1040511f0 <col:1, col:7> col:7 implicit class Foo'
+        ]
+        expected = []
+        self.check_if_lines_are_parsed_as_expected(lines, expected)
+
     def test_parser_should_parse_cxx_record_decl_class_access(self):
         lines = [
             '| |-AccessSpecDecl 0x104849e50 <line:4:1, col:7> col:1 public'
@@ -56,6 +70,21 @@ class TestAstDumpParser(TestCase):
             'type': 'method',
             'name': 'GetValue',
             'declaration': 'int (void)'
+        }]
+        self.check_if_lines_are_parsed_as_expected(lines, expected)
+        self.assertEquals(self.parser.access, 'default')
+        self.assertEquals(self.parser.parent, '')
+        self.assertEquals(self.parser.level, 3)
+
+    def test_parser_should_parse_cxx_method_decl(self):
+        lines = [
+            "  |-CXXMethodDecl 0x1040576e0 <line:21:5, col:32> col:14 Bar 'class ShortStr (class A, class B &, class C *)'"
+        ]
+        expected = [{
+            'access': 'default',
+            'type': 'method',
+            'name': 'Bar',
+            'declaration': 'class ShortStr (class A, class B &, class C *)'
         }]
         self.check_if_lines_are_parsed_as_expected(lines, expected)
         self.assertEquals(self.parser.access, 'default')

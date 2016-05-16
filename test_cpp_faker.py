@@ -14,7 +14,7 @@ class TestCppFaker(TestCase):
             self.faker.process_line(line)
         fakes = self.faker.get_fakes()
         generated = self.generator.generate(fakes)
-        self.assertEquals(expected, generated)
+        self.assertMultiLineEqual(expected, generated)
 
     def test_cpp_faker_should_generate_empty_string_for_unknown_msgtype(self):
         self.check_if_generated_code_is_as_expected(
@@ -37,33 +37,34 @@ class TestCppFaker(TestCase):
     def test_cpp_faker_should_generate_class_for_unknown_type_name(self):
         self.check_if_generated_code_is_as_expected(
             [('', '', '', 'error', ['unknown type name', 'ShortStr'])],
-            'class ShortStr{\n};\n'
+            'class ShortStr;'
         )
 
     def test_cpp_faker_should_generate_members_for_classes(self):
-        self.check_if_generated_code_is_as_expected([
+        lines = [
             ('', '', '', 'error', ['unknown type name', 'Foo']),
             ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
-        ],
-            'class Foo{\n'
-            'public:\n'
-            '\tvoid Bar();\n'
-            '};\n',
-        )
+        ]
+        expected = 'class Foo{\n'\
+            '\tpublic:\n'\
+            '\tvoid Bar();\n'\
+            '};\n'
+        self.check_if_generated_code_is_as_expected(lines, expected)
+
 
     def test_cpp_faker_initialization(self):
         initial = ('', '', '', 'error', ['unknown type name', 'Foo'])
         self.faker.process_line(initial)
         fakes = self.faker.get_fakes()
         self.faker = CppFaker(fakes)
-        self.check_if_generated_code_is_as_expected([
+        lines = [
             ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
-        ],
-            'class Foo{\n'
-            'public:\n'
-            '\tvoid Bar();\n'
-            '};\n',
-        )
+        ]
+        expected = 'class Foo{\n'\
+            '\tpublic:\n'\
+            '\tvoid Bar();\n'\
+            '};\n'
+        self.check_if_generated_code_is_as_expected(lines, expected)
 
     def test_cpp_faker_should_not_register_duplicate_findings(self):
         self.check_if_generated_code_is_as_expected(
@@ -71,7 +72,7 @@ class TestCppFaker(TestCase):
                 ('', '', '', 'error', ['unknown type name', 'ShortStr']),
                 ('', '', '', 'error', ['unknown type name', 'ShortStr'])
             ],
-            'class ShortStr{\n};\n'
+            'class ShortStr;'
         )
 
     def test_cpp_faker_should_not_register_duplicate_members(self):
@@ -82,7 +83,7 @@ class TestCppFaker(TestCase):
                 ('', '', '', 'error', ['no member named', 'Bar', 'in', 'Foo'])
             ],
             'class Foo{\n'
-            'public:\n'
+            '\tpublic:\n'
             '\tvoid Bar();\n'
             '};\n',
         )
@@ -96,7 +97,7 @@ class TestCppFaker(TestCase):
                 'r.cpp', '6', '4', 'error',
                 ['', 'ma', 'does not refer to a value'])
         ]
-        expected = 'int ma;\n'
+        expected = 'int ma;'
         self.check_if_generated_code_is_as_expected(lines, expected)
 
 if __name__ == '__main__':

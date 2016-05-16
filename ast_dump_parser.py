@@ -11,9 +11,10 @@ class AstDumpParser:
         return self.tree['members']
 
     def parse_line(self, line):
-        line = line.strip()
+        poshyphen = line.find('-')
+        line = line[poshyphen+1:]
         if 'CXXRecordDecl' in line:
-            if 'referenced class' in line:
+            if 'class' in line and 'implicit' not in line:
                 self.access = 'private'
                 arr = line.split('class')
                 name = arr[1].strip()
@@ -22,8 +23,9 @@ class AstDumpParser:
                     name = arr[0].strip()
                 return {'type': 'class', 'name': name}
         elif 'CXXMethodDecl' in line:
+            line
             arr = line.split(' ')
-            name = arr[6]
+            name = arr[5]
             arr = line.split("'")
             decl = arr[1]
             return {

@@ -24,6 +24,13 @@ class CppFaker:
                 return
         print '{} not found'.format(fakename)
 
+    def update_declaration(self, fakename, decl):
+        for fake in self.fakes:
+            if fake['name'] == fakename:
+                fake['declaration'] = decl
+                return
+        print '{} not found'.format(fakename)
+
     def insert_definition(self, definition):
         for fake in self.fakes:
             if fake['name'] == definition['name']:
@@ -38,10 +45,16 @@ class CppFaker:
             fake = {"type": "class", "name": errmsg[1]}
             self.insert_definition(fake)
         elif errmsg[0] == 'use of undeclared identifier':
-            fake = {"type": "class", "name": errmsg[1]}
+            fake = {"type": "class", "name": errmsg[1], "members":[]}
             self.insert_definition(fake)
         elif errmsg[0] == 'no member named' and errmsg[2] == 'in':
-            member = {"type": 'void', "name": errmsg[1]}
+            member = {
+                "type": 'method',
+                "access": 'public',
+                "declaration":"void ()",
+                "name": errmsg[1]
+            }
             self.insert_member(errmsg[3], member)
         elif errmsg[0] == '' and errmsg[2] == 'does not refer to a value':
-            self.update_type(errmsg[1], 'int')
+            self.update_type(errmsg[1], 'field')
+            self.update_declaration(errmsg[1], 'int')
